@@ -7,12 +7,13 @@ pytest
 pytest-asyncio
 httpx                   # needed by FastAPI TestClient
 
+# Linting & formatting
+ruff
+
 # Evaluation
 ragas
 datasets
 pandas
-pyarrow
+pyarrow>=16.0.0         # pin to modern version — older versions try to compile from source on Python 3.12
 scikit-learn
 scipy
-
-ruff
