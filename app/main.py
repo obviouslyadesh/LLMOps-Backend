@@ -6,19 +6,25 @@ from app.api.routes.health import router as health_router
 from app.api.routes.search import router as search_router
 from app.api.routes.upload import router as upload_router
 from app.core.config import settings
-from app.core.middleware import RequestTimingMiddleware
+from app.core.middleware import APIKeyMiddleware, RequestTimingMiddleware
 
 app = FastAPI(title=settings.APP_NAME, version="1.0.0")
 
-app.include_router(health_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-app.include_router(upload_router)
-
-app.include_router(search_router)
-
-app.include_router(chat_router)
-
+app.add_middleware(APIKeyMiddleware)
 app.add_middleware(RequestTimingMiddleware)
+
+app.include_router(health_router)
+app.include_router(upload_router)
+app.include_router(search_router)
+app.include_router(chat_router)
 
 
 @app.get("/")
@@ -31,10 +37,3 @@ def health():
     return {"status": "healthy"}
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
